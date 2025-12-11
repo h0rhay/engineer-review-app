@@ -3,6 +3,7 @@ import { motion } from 'framer-motion'
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '~/components/ui/dialog'
 import { Button } from '~/components/ui/button'
 import { Badge } from '~/components/ui/badge'
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '~/components/ui/accordion'
 import type { Stage } from '~/lib/competencies'
 import { Sparkles, CheckCircle2, Lightbulb, RefreshCw } from 'lucide-react'
 
@@ -45,96 +46,185 @@ export const StageExplanation = ({ stage, competencyName, open, onOpenChange }: 
         </DialogHeader>
 
         <div className="space-y-4">
-          {/* Tabs */}
-          <div className="flex gap-2 border-b border-border pb-2 overflow-x-auto">
-            <motion.button
-              onClick={() => setActiveTab('explanation')}
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              className={`flex items-center gap-2 px-4 py-2 text-sm font-medium transition-all rounded-lg whitespace-nowrap ${
-                activeTab === 'explanation'
-                  ? 'bg-gradient-to-r from-yellow-500/20 to-orange-500/20 border-2 border-primary text-foreground shadow-lg'
-                  : 'text-white hover:text-foreground hover:bg-muted/50'
-              }`}
-            >
-              <Lightbulb className="h-4 w-4" />
-              Help me understand this
-            </motion.button>
-            <motion.button
-              onClick={() => setActiveTab('examples')}
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              className={`flex items-center gap-2 px-4 py-2 text-sm font-medium transition-all rounded-lg whitespace-nowrap ${
-                activeTab === 'examples'
-                  ? 'bg-gradient-to-r from-yellow-500/20 to-orange-500/20 border-2 border-primary text-foreground shadow-lg'
-                  : 'text-white hover:text-foreground hover:bg-muted/50'
-              }`}
-            >
-              <Sparkles className="h-4 w-4" />
-              Show me an example
-            </motion.button>
-            <motion.button
-              onClick={() => setActiveTab('rephrasing')}
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              className={`flex items-center gap-2 px-4 py-2 text-sm font-medium transition-all rounded-lg whitespace-nowrap ${
-                activeTab === 'rephrasing'
-                  ? 'bg-gradient-to-r from-yellow-500/20 to-orange-500/20 border-2 border-primary text-foreground shadow-lg'
-                  : 'text-white hover:text-foreground hover:bg-muted/50'
-              }`}
-            >
-              <RefreshCw className="h-4 w-4" />
-              Rephrase this for me
-            </motion.button>
-          </div>
+          {/* Desktop Tabs - hidden on mobile */}
+          <div className="hidden md:block">
+            <div className="flex gap-2 border-b border-border pb-2 overflow-x-auto">
+              <motion.button
+                onClick={() => setActiveTab('explanation')}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                className={`flex items-center gap-2 px-4 py-2 text-sm font-medium transition-all rounded-lg whitespace-nowrap ${
+                  activeTab === 'explanation'
+                    ? 'bg-gradient-to-r from-yellow-500/20 to-orange-500/20 border-2 border-primary text-foreground shadow-lg'
+                    : 'text-white hover:text-foreground hover:bg-muted/50'
+                }`}
+              >
+                <Lightbulb className="h-4 w-4" />
+                Help me understand this
+              </motion.button>
+              <motion.button
+                onClick={() => setActiveTab('examples')}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                className={`flex items-center gap-2 px-4 py-2 text-sm font-medium transition-all rounded-lg whitespace-nowrap ${
+                  activeTab === 'examples'
+                    ? 'bg-gradient-to-r from-yellow-500/20 to-orange-500/20 border-2 border-primary text-foreground shadow-lg'
+                    : 'text-white hover:text-foreground hover:bg-muted/50'
+                }`}
+              >
+                <Sparkles className="h-4 w-4" />
+                Show me an example
+              </motion.button>
+              <motion.button
+                onClick={() => setActiveTab('rephrasing')}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                className={`flex items-center gap-2 px-4 py-2 text-sm font-medium transition-all rounded-lg whitespace-nowrap ${
+                  activeTab === 'rephrasing'
+                    ? 'bg-gradient-to-r from-yellow-500/20 to-orange-500/20 border-2 border-primary text-foreground shadow-lg'
+                    : 'text-white hover:text-foreground hover:bg-muted/50'
+                }`}
+              >
+                <RefreshCw className="h-4 w-4" />
+                Rephrase this for me
+              </motion.button>
+            </div>
 
-          {/* Content */}
-          <div className="min-h-[200px]">
-            {activeTab === 'explanation' && (
-              <div className="space-y-4">
-                <div>
-                  <h4 className="font-semibold mb-2">Here's what this means:</h4>
-                  <p className="text-white leading-relaxed">
-                    {stage.description}
-                  </p>
-                </div>
-                {stage.breakdown && (
-                  <div className="bg-muted/50 rounded-lg p-4">
-                    <h4 className="font-semibold mb-2">Let's break it down further:</h4>
-                    <p className="text-sm text-white leading-relaxed">
-                      {stage.breakdown}
+            {/* Desktop Content */}
+            <div className="min-h-[200px] mt-4">
+              {activeTab === 'explanation' && (
+                <div className="space-y-4">
+                  <div>
+                    <h4 className="font-semibold mb-2">Here's what this means:</h4>
+                    <p className="text-white leading-relaxed">
+                      {stage.description}
                     </p>
                   </div>
-                )}
-              </div>
-            )}
+                  {stage.breakdown && (
+                    <div className="bg-muted/50 rounded-lg p-4">
+                      <h4 className="font-semibold mb-2">Let's break it down further:</h4>
+                      <p className="text-sm text-white leading-relaxed">
+                        {stage.breakdown}
+                      </p>
+                    </div>
+                  )}
+                </div>
+              )}
 
-            {activeTab === 'examples' && (
-              <div className="space-y-3">
-                <h4 className="font-semibold mb-3">Here are some real-world examples:</h4>
-                <ul className="space-y-2 list-disc list-inside">
-                  {stage.examples.map((example, idx) => (
-                    <li key={idx} className="text-sm text-white">
-                      {example}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            )}
+              {activeTab === 'examples' && (
+                <div className="space-y-3">
+                  <h4 className="font-semibold mb-3">Here are some real-world examples:</h4>
+                  <ul className="space-y-2 list-disc list-inside">
+                    {stage.examples.map((example, idx) => (
+                      <li key={idx} className="text-sm text-white">
+                        {example}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
 
-            {activeTab === 'rephrasing' && (
-              <div className="space-y-3">
-                <h4 className="font-semibold mb-3">Here's another way to say it:</h4>
-                <ul className="space-y-2 list-disc list-inside">
-                  {stage.rephrasing.map((rephrase, idx) => (
-                    <li key={idx} className="text-sm text-white">
-                      {rephrase}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            )}
+              {activeTab === 'rephrasing' && (
+                <div className="space-y-3">
+                  <h4 className="font-semibold mb-3">Here's another way to say it:</h4>
+                  <ul className="space-y-2 list-disc list-inside">
+                    {stage.rephrasing.map((rephrase, idx) => (
+                      <li key={idx} className="text-sm text-white">
+                        {rephrase}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+            </div>
           </div>
+
+          {/* Mobile Accordion - shown on mobile only */}
+          <Accordion type="single" collapsible className="md:hidden space-y-3">
+            <AccordionItem
+              value="explanation"
+              className="border-2 border-border/60 rounded-lg px-4 bg-muted/20 shadow-sm data-[state=open]:border-yellow-500/30 data-[state=open]:bg-yellow-500/5 transition-all"
+            >
+              <AccordionTrigger className="text-sm font-medium hover:no-underline py-4">
+                <div className="flex items-center gap-3">
+                  <div className="flex-shrink-0 w-8 h-8 rounded-full bg-yellow-500/10 border border-yellow-500/30 flex items-center justify-center">
+                    <Lightbulb className="h-4 w-4 text-yellow-400" />
+                  </div>
+                  <span className="text-left">Help me understand this</span>
+                </div>
+              </AccordionTrigger>
+              <AccordionContent>
+                <div className="space-y-4 pt-2 pb-4 border-t border-border/40">
+                  <div>
+                    <h4 className="font-semibold mb-2">Here's what this means:</h4>
+                    <p className="text-white leading-relaxed text-sm">
+                      {stage.description}
+                    </p>
+                  </div>
+                  {stage.breakdown && (
+                    <div className="bg-muted/50 rounded-lg p-4 border border-border/40">
+                      <h4 className="font-semibold mb-2 text-sm">Let's break it down further:</h4>
+                      <p className="text-xs text-white leading-relaxed">
+                        {stage.breakdown}
+                      </p>
+                    </div>
+                  )}
+                </div>
+              </AccordionContent>
+            </AccordionItem>
+
+            <AccordionItem
+              value="examples"
+              className="border-2 border-border/60 rounded-lg px-4 bg-muted/20 shadow-sm data-[state=open]:border-orange-500/30 data-[state=open]:bg-orange-500/5 transition-all"
+            >
+              <AccordionTrigger className="text-sm font-medium hover:no-underline py-4">
+                <div className="flex items-center gap-3">
+                  <div className="flex-shrink-0 w-8 h-8 rounded-full bg-orange-500/10 border border-orange-500/30 flex items-center justify-center">
+                    <Sparkles className="h-4 w-4 text-orange-400" />
+                  </div>
+                  <span className="text-left">Show me an example</span>
+                </div>
+              </AccordionTrigger>
+              <AccordionContent>
+                <div className="space-y-3 pt-2 pb-4 border-t border-border/40">
+                  <h4 className="font-semibold mb-3 text-sm">Here are some real-world examples:</h4>
+                  <ul className="space-y-2 list-disc list-inside">
+                    {stage.examples.map((example, idx) => (
+                      <li key={idx} className="text-xs text-white">
+                        {example}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </AccordionContent>
+            </AccordionItem>
+
+            <AccordionItem
+              value="rephrasing"
+              className="border-2 border-border/60 rounded-lg px-4 bg-muted/20 shadow-sm data-[state=open]:border-pink-500/30 data-[state=open]:bg-pink-500/5 transition-all"
+            >
+              <AccordionTrigger className="text-sm font-medium hover:no-underline py-4">
+                <div className="flex items-center gap-3">
+                  <div className="flex-shrink-0 w-8 h-8 rounded-full bg-pink-500/10 border border-pink-500/30 flex items-center justify-center">
+                    <RefreshCw className="h-4 w-4 text-pink-400" />
+                  </div>
+                  <span className="text-left">Rephrase this for me</span>
+                </div>
+              </AccordionTrigger>
+              <AccordionContent>
+                <div className="space-y-3 pt-2 pb-4 border-t border-border/40">
+                  <h4 className="font-semibold mb-3 text-sm">Here's another way to say it:</h4>
+                  <ul className="space-y-2 list-disc list-inside">
+                    {stage.rephrasing.map((rephrase, idx) => (
+                      <li key={idx} className="text-xs text-white">
+                        {rephrase}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </AccordionContent>
+            </AccordionItem>
+          </Accordion>
 
           {/* Understanding check */}
           <div className="border-t border-border pt-4">
