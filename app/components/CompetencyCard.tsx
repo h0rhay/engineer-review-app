@@ -1,11 +1,7 @@
-import React, { useState } from 'react'
-import { motion } from 'framer-motion'
+import { useRef } from 'react'
 import { Card, CardContent } from '~/components/ui/card'
 import { Badge } from '~/components/ui/badge'
-import { RadioGroup, RadioGroupItem } from '~/components/ui/radio-group'
-import { Button } from '~/components/ui/button'
-import { StageExplanation } from './StageExplanation'
-import { HelpButton } from './HelpButton'
+import { CompetencyModal } from './CompetencyModal'
 import type { Competency } from '~/lib/competencies'
 import { CheckCircle2 } from 'lucide-react'
 
@@ -24,137 +20,96 @@ export const CompetencyCard = ({
   isExpanded,
   onToggleExpand,
 }: CompetencyCardProps) => {
-  const [helpStage, setHelpStage] = useState<number | null>(null)
+  const cardRef = useRef<HTMLDivElement>(null)
   const isComplete = selectedStage !== undefined
+  const transitionName = `competency-${competency.id}`
+
+  const handleClick = async () => {
+    if (!document.startViewTransition) {
+      onToggleExpand()
+      return
+    }
+
+    // Set the thumbnail's view-transition-name to match the modal
+    if (cardRef.current) {
+      cardRef.current.style.viewTransitionName = transitionName
+    }
+
+    // Start the view transition
+    const transition = document.startViewTransition(() => {
+      // Clear the thumbnail's view-transition-name inside the transition callback
+      if (cardRef.current) {
+        cardRef.current.style.viewTransitionName = ''
+      }
+      // Update the DOM (show modal)
+      onToggleExpand()
+    })
+
+    await transition.finished
+  }
 
   return (
     <>
-      <motion.div
-        layout
-        initial={false}
-        animate={{
-          scale: isExpanded ? 1.02 : 1,
-        }}
-        transition={{ duration: 0.2 }}
-      >
+      {!isExpanded && (
         <Card
-          className={`cursor-pointer transition-all duration-300 ${
-            isExpanded
-              ? 'ring-2 ring-primary shadow-xl'
-              : 'hover:shadow-lg hover:scale-105'
-          } ${competency.gradient} bg-opacity-10 border-border`}
-          onClick={isExpanded ? undefined : onToggleExpand}
+          ref={cardRef}
+          className={`cursor-pointer transition-all duration-300 hover:shadow-lg hover:scale-105 ${competency.gradient} bg-opacity-10 border-border`}
+          onClick={handleClick}
         >
-          <CardContent className="p-6">
-            {!isExpanded ? (
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <div className={`w-12 h-12 rounded-full ${competency.gradient} flex items-center justify-center text-white font-bold text-lg`}>
-                    {competency.id}
-                  </div>
-                  <div>
-                    <h3 className="font-semibold text-foreground">{competency.name}</h3>
-                    {isComplete && (
-                      <Badge variant="default" className="mt-1 gap-1">
-                        <CheckCircle2 className="h-3 w-3" />
-                        Complete
-                      </Badge>
-                    )}
-                  </div>
-                </div>
-                {selectedStage !== undefined && (
-                  <Badge variant="secondary" className="text-xs">
-                    {competency.stages[selectedStage]?.name}
+        <CardContent className="p-6">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div
+                className={`w-12 h-12 rounded-full ${competency.gradient} flex items-center justify-center text-white font-bold text-lg`}
+              >
+                {competency.id}
+              </div>
+              <div>
+                <h3 className="font-semibold text-foreground">{competency.name}</h3>
+                {isComplete && (
+                  <Badge variant="default" className="mt-1 gap-1">
+                    <CheckCircle2 className="h-3 w-3" />
+                    Complete
                   </Badge>
                 )}
               </div>
-            ) : (
-              <div className="space-y-6">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <div className={`w-12 h-12 rounded-full ${competency.gradient} flex items-center justify-center text-white font-bold text-lg`}>
-                      {competency.id}
-                    </div>
-                    <h3 className="text-xl font-semibold text-foreground">{competency.name}</h3>
-                  </div>
-                  <Button variant="ghost" size="sm" onClick={onToggleExpand}>
-                    Collapse
-                  </Button>
-                </div>
-
-                <RadioGroup
-                  value={selectedStage?.toString()}
-                  onValueChange={(value) => {
-                    onStageSelect(competency.id, parseInt(value, 10))
-                  }}
-                  className="space-y-4"
-                >
-                  {competency.stages.map((stage) => (
-                    <div
-                      key={stage.level}
-                      className={`flex items-start gap-3 p-4 rounded-lg border transition-colors ${
-                        selectedStage === stage.level
-                          ? 'border-primary bg-primary/10'
-                          : 'border-border hover:border-primary/50'
-                      }`}
-                    >
-                      <RadioGroupItem value={stage.level.toString()} id={`c${competency.id}-s${stage.level}`} />
-                      <label
-                        htmlFor={`c${competency.id}-s${stage.level}`}
-                        className="flex-1 cursor-pointer"
-                      >
-                        <div className="flex items-start justify-between gap-3">
-                          <div className="flex-1">
-                            <div className="flex items-center gap-3 mb-2 group/help">
-                              <span className="font-semibold text-foreground text-base">{stage.name}</span>
-                              <div className="relative">
-                                <HelpButton
-                                  size="sm"
-                                  onClick={(e) => {
-                                    e.stopPropagation()
-                                    setHelpStage(stage.level)
-                                  }}
-                                />
-                              </div>
-                              <span className="text-xs text-white opacity-0 group-hover/help:opacity-100 transition-opacity whitespace-nowrap">
-                                Help me understand this
-                              </span>
-                            </div>
-                            <p className="text-sm text-white leading-relaxed">
-                              {stage.description}
-                            </p>
-                          </div>
-                        </div>
-                      </label>
-                    </div>
-                  ))}
-                </RadioGroup>
-
-                <Button
-                  onClick={onToggleExpand}
-                  className={`w-full transition-all duration-300 ${
-                    selectedStage !== undefined 
-                      ? 'bg-primary text-primary-foreground hover:bg-primary/90 shadow-[0_0_20px_-5px_hsl(var(--primary))]' 
-                      : ''
-                  }`}
-                  variant={selectedStage !== undefined ? 'default' : 'outline'}
-                >
-                  {selectedStage !== undefined ? 'Confirm Selection' : 'Close'}
-                </Button>
-              </div>
+            </div>
+            {selectedStage !== undefined && (
+              <Badge variant="secondary" className="text-xs">
+                {competency.stages[selectedStage]?.name}
+              </Badge>
             )}
-          </CardContent>
-        </Card>
-      </motion.div>
-
-      {helpStage !== null && (
-        <StageExplanation
-          stage={competency.stages[helpStage]}
-          competencyName={competency.name}
-          open={helpStage !== null}
-          onOpenChange={(open) => !open && setHelpStage(null)}
-        />
+          </div>
+        </CardContent>
+      </Card>
       )}
+
+      <CompetencyModal
+        competency={competency}
+        selectedStage={selectedStage}
+        onStageSelect={onStageSelect}
+        open={isExpanded}
+        onOpenChange={async (open) => {
+          if (!open) {
+            if (!document.startViewTransition) {
+              onToggleExpand()
+              return
+            }
+            
+            // For closing, we need to reverse the process
+            const transition = document.startViewTransition(() => {
+              onToggleExpand()
+            })
+            
+            await transition.finished
+            
+            // After closing, ensure card can be clicked again
+            if (cardRef.current) {
+              cardRef.current.style.viewTransitionName = ''
+            }
+          }
+        }}
+      />
     </>
   )
 }

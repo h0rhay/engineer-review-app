@@ -1,4 +1,4 @@
-import { RadarChart, Radar, PolarGrid, PolarAngleAxis, PolarRadiusAxis, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts'
+import { RadarChart, Radar, PolarGrid, PolarAngleAxis, PolarRadiusAxis, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '~/components/ui/card'
 import { Badge } from '~/components/ui/badge'
 import type { AssessmentResults } from '~/lib/scoring'
@@ -23,7 +23,7 @@ const COLORS = [
   '#22c55e', // emerald
 ]
 
-export const ResultsDashboard = ({ results, name }: ResultsDashboardProps) => {
+export const ResultsDashboard = ({ results, name: _name }: ResultsDashboardProps) => {
   const radarData = results.competencyScores.map(score => ({
     competency: COMPETENCIES.find(c => c.id === score.id)?.name || `Competency ${score.id}`,
     level: score.level,
@@ -181,7 +181,7 @@ export const ResultsDashboard = ({ results, name }: ResultsDashboardProps) => {
                 fill="#8884d8"
                 dataKey="value"
               >
-                {stageDistribution.map((entry, index) => (
+                {stageDistribution.map((_, index) => (
                   <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                 ))}
               </Pie>

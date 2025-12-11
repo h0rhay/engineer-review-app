@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import { createFileRoute, useNavigate, useSearch } from '@tanstack/react-router'
 import { CompetencyCard } from '~/components/CompetencyCard'
 import { ProgressIndicator } from '~/components/ProgressIndicator'
 import { Button } from '~/components/ui/button'
 import { COMPETENCIES } from '~/lib/competencies'
-import { decodeAssessmentState, updateSelectionInUrl, getCompletionCount, isAssessmentComplete, encodeAssessmentState } from '~/lib/url-state'
+import { decodeAssessmentState, getCompletionCount, isAssessmentComplete } from '~/lib/url-state'
 import { HelpButton } from '~/components/HelpButton'
 import { Popover, PopoverContent, PopoverTrigger } from '~/components/ui/popover'
 
@@ -46,12 +46,10 @@ function Assessment() {
 
   const handleStageSelect = (competencyId: number, stageLevel: number) => {
     const newSelections = { ...selections, [competencyId]: stageLevel }
-    const newState = { name: state.name, selections: newSelections }
-    const encoded = encodeAssessmentState(newState)
     
     navigate({
       to: '/assessment',
-      search: (prev) => {
+      search: () => {
         const newSearch: Record<string, string> = { name: state.name }
         Object.entries(newSelections).forEach(([id, level]) => {
           newSearch[`c${id}`] = level.toString()
@@ -70,7 +68,7 @@ function Assessment() {
     })
     navigate({
       to: '/results',
-      search: resultsSearch,
+      search: resultsSearch as { name: string },
     })
   }
 
@@ -128,7 +126,14 @@ function Assessment() {
         </div>
 
         {/* Competency Cards Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div 
+          className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 transition-opacity duration-300 ${
+            expandedCard !== null ? 'opacity-0 pointer-events-none' : 'opacity-100'
+          }`}
+          style={{ 
+            viewTransitionName: expandedCard !== null ? 'grid-fade' : 'none',
+          }}
+        >
           {COMPETENCIES.map((competency) => (
             <CompetencyCard
               key={competency.id}
@@ -137,7 +142,13 @@ function Assessment() {
               onStageSelect={handleStageSelect}
               isExpanded={expandedCard === competency.id}
               onToggleExpand={() => {
-                setExpandedCard(expandedCard === competency.id ? null : competency.id)
+                if (!document.startViewTransition) {
+                  setExpandedCard(expandedCard === competency.id ? null : competency.id)
+                  return
+                }
+                document.startViewTransition(() => {
+                  setExpandedCard(expandedCard === competency.id ? null : competency.id)
+                })
               }}
             />
           ))}

@@ -1,4 +1,3 @@
-import React from 'react'
 import { createFileRoute, useSearch } from '@tanstack/react-router'
 import { useEffect } from 'react'
 import { ResultsDashboard } from '~/components/ResultsDashboard'

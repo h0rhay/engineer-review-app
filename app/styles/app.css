@@ -36,3 +36,57 @@
   }
 }
 
+/* View Transitions API support */
+@view-transition {
+  navigation: auto;
+}
+
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: 0.3s;
+}
+
+/* Smooth transitions for competency cards */
+::view-transition-old(competency-1),
+::view-transition-old(competency-2),
+::view-transition-old(competency-3),
+::view-transition-old(competency-4),
+::view-transition-old(competency-5),
+::view-transition-old(competency-6),
+::view-transition-old(competency-7),
+::view-transition-old(competency-8),
+::view-transition-old(competency-9),
+::view-transition-old(competency-10),
+::view-transition-old(competency-11) {
+  animation-duration: 0.4s;
+  animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 1;
+}
+
+::view-transition-new(competency-1),
+::view-transition-new(competency-2),
+::view-transition-new(competency-3),
+::view-transition-new(competency-4),
+::view-transition-new(competency-5),
+::view-transition-new(competency-6),
+::view-transition-new(competency-7),
+::view-transition-new(competency-8),
+::view-transition-new(competency-9),
+::view-transition-new(competency-10),
+::view-transition-new(competency-11) {
+  animation-duration: 0.4s;
+  animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 999;
+}
+
+/* Grid fade transition */
+::view-transition-old(grid-fade) {
+  animation-duration: 0.3s;
+  animation-timing-function: ease-out;
+}
+
+::view-transition-new(grid-fade) {
+  animation-duration: 0.3s;
+  animation-timing-function: ease-in;
+}
+
