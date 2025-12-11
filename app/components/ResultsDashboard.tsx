@@ -42,8 +42,8 @@ export const ResultsDashboard = ({ results, name: _name }: ResultsDashboardProps
 
   return (
     <div className="space-y-6">
-      {/* Summary Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      {/* Row 1: Average Stage & Stage Distribution */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <Card className="bg-card/80 backdrop-blur-sm border-border">
           <CardHeader>
             <CardTitle className="text-lg">Average Stage</CardTitle>
@@ -59,6 +59,43 @@ export const ResultsDashboard = ({ results, name: _name }: ResultsDashboardProps
           </CardContent>
         </Card>
 
+        <Card className="bg-card/80 backdrop-blur-sm border-border">
+          <CardHeader>
+            <CardTitle className="text-lg">Stage Distribution</CardTitle>
+            <CardDescription>Distribution across maturity levels</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <ResponsiveContainer width="100%" height={200}>
+              <PieChart>
+                <Pie
+                  data={stageDistribution}
+                  cx="50%"
+                  cy="50%"
+                  labelLine={false}
+                  label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+                  outerRadius={80}
+                  fill="#8884d8"
+                  dataKey="value"
+                >
+                  {stageDistribution.map((_, index) => (
+                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                  ))}
+                </Pie>
+                <Tooltip
+                  contentStyle={{
+                    backgroundColor: '#1f2937',
+                    border: '1px solid #374151',
+                    borderRadius: '8px',
+                  }}
+                />
+              </PieChart>
+            </ResponsiveContainer>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Row 2: Strongest Areas & Areas for Growth */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <Card className="bg-card/80 backdrop-blur-sm border-border">
           <CardHeader>
             <CardTitle className="text-lg">Strongest Areas</CardTitle>
@@ -161,42 +198,6 @@ export const ResultsDashboard = ({ results, name: _name }: ResultsDashboardProps
           </CardContent>
         </Card>
       </div>
-
-      {/* Pie Chart */}
-      <Card className="bg-card/80 backdrop-blur-sm border-border">
-        <CardHeader>
-          <CardTitle>Stage Distribution</CardTitle>
-          <CardDescription>Distribution across maturity levels</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <ResponsiveContainer width="100%" height={300}>
-            <PieChart>
-              <Pie
-                data={stageDistribution}
-                cx="50%"
-                cy="50%"
-                labelLine={false}
-                label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
-                outerRadius={100}
-                fill="#8884d8"
-                dataKey="value"
-              >
-                {stageDistribution.map((_, index) => (
-                  <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                ))}
-              </Pie>
-              <Tooltip
-                contentStyle={{
-                  backgroundColor: '#1f2937',
-                  border: '1px solid #374151',
-                  borderRadius: '8px',
-                }}
-              />
-            </PieChart>
-          </ResponsiveContainer>
-        </CardContent>
-      </Card>
     </div>
   )
 }
-

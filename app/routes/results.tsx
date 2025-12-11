@@ -1,11 +1,11 @@
-import { createFileRoute, useSearch } from '@tanstack/react-router'
+import { createFileRoute, useSearch, useNavigate } from '@tanstack/react-router'
 import { useEffect } from 'react'
 import { ResultsDashboard } from '~/components/ResultsDashboard'
 import { Button } from '~/components/ui/button'
 import { decodeAssessmentState } from '~/lib/url-state'
 import { calculateResults } from '~/lib/scoring'
 import { generatePDF } from '~/lib/pdf-generator'
-import { Download, Share2 } from 'lucide-react'
+import { Download, Share2, ArrowLeft } from 'lucide-react'
 
 export const Route = createFileRoute('/results')({
   component: Results,
@@ -17,6 +17,7 @@ export const Route = createFileRoute('/results')({
 })
 
 function Results() {
+  const navigate = useNavigate()
   const search = useSearch({ from: '/results' })
   
   // Decode state from URL
@@ -44,6 +45,22 @@ function Results() {
     alert('Link copied to clipboard!')
   }
 
+  const handleBack = () => {
+    // Construct search params for assessment page to preserve state
+    // We cast to any because the search params are dynamic based on competencies
+    const assessmentSearch: any = { name: state.name }
+    
+    // Add all competency selections
+    results.competencyScores.forEach(score => {
+      assessmentSearch[`c${score.id}`] = score.level.toString()
+    })
+
+    navigate({
+      to: '/assessment',
+      search: assessmentSearch,
+    })
+  }
+
   return (
     <div className="min-h-screen bg-black p-4 md:p-8">
       {/* Decorative gradient shapes */}
@@ -52,14 +69,25 @@ function Results() {
 
       <div className="relative max-w-7xl mx-auto space-y-6">
         {/* Header */}
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-3xl font-serif text-foreground mb-2">
-              Assessment Results
-            </h1>
-            <p className="text-white">
-              {state.name ? `${state.name}'s competency assessment` : 'Your competency assessment'}
-            </p>
+        <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+          <div className="flex items-center gap-4">
+            <Button 
+              variant="ghost" 
+              size="icon" 
+              onClick={handleBack}
+              className="text-muted-foreground hover:text-foreground"
+              aria-label="Back to assessment"
+            >
+              <ArrowLeft className="h-6 w-6" />
+            </Button>
+            <div>
+              <h1 className="text-3xl font-serif text-foreground mb-2">
+                Assessment Results
+              </h1>
+              <p className="text-white">
+                {state.name ? `${state.name}'s competency assessment` : 'Your competency assessment'}
+              </p>
+            </div>
           </div>
           <div className="flex gap-2">
             <Button variant="outline" onClick={handleShare} className="gap-2">
