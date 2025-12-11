@@ -160,7 +160,7 @@ function Assessment() {
             <Button
               onClick={handleViewResults}
               size="lg"
-              className="bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 shadow-lg"
+              className="text-black bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 shadow-lg"
             >
               View Results
             </Button>

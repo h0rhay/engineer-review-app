@@ -94,7 +94,7 @@ function Results() {
               <Share2 className="h-4 w-4" />
               Share Link
             </Button>
-            <Button onClick={handleExportPDF} className="gap-2 bg-gradient-to-r from-primary to-accent">
+            <Button onClick={handleExportPDF} className="gap-2 text-black bg-gradient-to-r from-primary to-accent">
               <Download className="h-4 w-4" />
               Export PDF
             </Button>
