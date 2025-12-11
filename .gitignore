@@ -1,11 +1,13 @@
 # Dependencies
 node_modules/
 .pnpm-store/
+.pnpm-debug.log*
 
 # Build outputs
 dist/
 build/
 .vite/
+*.local
 
 # Environment variables
 .env
@@ -18,6 +20,7 @@ build/
 *.swp
 *.swo
 *~
+.cursor/
 
 # OS
 .DS_Store
@@ -27,6 +30,18 @@ Thumbs.db
 *.log
 npm-debug.log*
 pnpm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Turbo
+.turbo/
 
 # Generated files
 app/routes/routeTree.gen.ts
+
+# Testing
+coverage/
+.nyc_output/
+
+# Misc
+*.tsbuildinfo
