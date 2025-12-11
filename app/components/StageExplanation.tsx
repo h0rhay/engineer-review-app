@@ -112,11 +112,10 @@ export const StageExplanation = ({ stage, competencyName, open, onOpenChange }: 
             {activeTab === 'examples' && (
               <div className="space-y-3">
                 <h4 className="font-semibold mb-3">Here are some real-world examples:</h4>
-                <ul className="space-y-2">
+                <ul className="space-y-2 list-disc list-inside">
                   {stage.examples.map((example, idx) => (
-                    <li key={idx} className="flex items-start gap-2">
-                      <Badge variant="outline" className="mt-1 shrink-0">Example {idx + 1}</Badge>
-                      <span className="text-sm text-white flex-1">{example}</span>
+                    <li key={idx} className="text-sm text-white">
+                      {example}
                     </li>
                   ))}
                 </ul>
@@ -126,11 +125,10 @@ export const StageExplanation = ({ stage, competencyName, open, onOpenChange }: 
             {activeTab === 'rephrasing' && (
               <div className="space-y-3">
                 <h4 className="font-semibold mb-3">Here's another way to say it:</h4>
-                <ul className="space-y-2">
+                <ul className="space-y-2 list-disc list-inside">
                   {stage.rephrasing.map((rephrase, idx) => (
-                    <li key={idx} className="flex items-start gap-2">
-                      <Badge variant="secondary" className="mt-1 shrink-0">Option {idx + 1}</Badge>
-                      <span className="text-sm text-white flex-1">{rephrase}</span>
+                    <li key={idx} className="text-sm text-white">
+                      {rephrase}
                     </li>
                   ))}
                 </ul>
