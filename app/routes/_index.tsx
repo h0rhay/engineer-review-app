@@ -10,13 +10,17 @@ export const Route = createFileRoute('/_index')({
 
 function Index() {
   const navigate = useNavigate()
-  const [name, setName] = useState('')
+  const [firstName, setFirstName] = useState('')
+  const [lastName, setLastName] = useState('')
 
   const handleStart = () => {
-    if (name.trim()) {
+    if (firstName.trim() || lastName.trim()) {
       navigate({
         to: '/assessment',
-        search: { name: name.trim() },
+        search: { 
+          firstName: firstName.trim(),
+          lastName: lastName.trim(),
+        },
       })
     }
   }
@@ -38,27 +42,47 @@ function Index() {
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-6">
-            <div className="space-y-2">
-              <label htmlFor="name" className="text-sm font-medium text-foreground">
-                Enter your name
-              </label>
-              <Input
-                id="name"
-                type="text"
-                placeholder="Your name"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter') {
-                    handleStart()
-                  }
-                }}
-                className="bg-background/50 border-border"
-              />
+            <div className="space-y-4">
+              <div className="space-y-2">
+                <label htmlFor="firstName" className="text-sm font-medium text-foreground">
+                  First Name
+                </label>
+                <Input
+                  id="firstName"
+                  type="text"
+                  placeholder="First name"
+                  value={firstName}
+                  onChange={(e) => setFirstName(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') {
+                      handleStart()
+                    }
+                  }}
+                  className="bg-background/50 border-border"
+                />
+              </div>
+              <div className="space-y-2">
+                <label htmlFor="lastName" className="text-sm font-medium text-foreground">
+                  Last Name
+                </label>
+                <Input
+                  id="lastName"
+                  type="text"
+                  placeholder="Last name"
+                  value={lastName}
+                  onChange={(e) => setLastName(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') {
+                      handleStart()
+                    }
+                  }}
+                  className="bg-background/50 border-border"
+                />
+              </div>
             </div>
             <Button
               onClick={handleStart}
-              disabled={!name.trim()}
+              disabled={!firstName.trim() && !lastName.trim()}
               className="w-full bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 text-white border-0"
               size="lg"
             >

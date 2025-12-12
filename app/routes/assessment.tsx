@@ -4,21 +4,55 @@ import { CompetencyCard } from '~/components/CompetencyCard'
 import { ProgressIndicator } from '~/components/ProgressIndicator'
 import { Button } from '~/components/ui/button'
 import { COMPETENCIES } from '~/lib/competencies'
-import { decodeAssessmentState, getCompletionCount, isAssessmentComplete } from '~/lib/url-state'
+import { decodeAssessmentState, getCompletionCount, isAssessmentComplete, getFullName } from '~/lib/url-state'
 import { HelpButton } from '~/components/HelpButton'
 import { Popover, PopoverContent, PopoverTrigger } from '~/components/ui/popover'
+
+type AssessmentSearchParams = {
+  firstName?: string
+  lastName?: string
+  c1?: string
+  c2?: string
+  c3?: string
+  c4?: string
+  c5?: string
+  c6?: string
+  c7?: string
+  c8?: string
+  c9?: string
+  c10?: string
+  c11?: string
+}
+
+type ResultsSearchParams = {
+  firstName?: string
+  lastName?: string
+  c1?: string
+  c2?: string
+  c3?: string
+  c4?: string
+  c5?: string
+  c6?: string
+  c7?: string
+  c8?: string
+  c9?: string
+  c10?: string
+  c11?: string
+}
 
 export const Route = createFileRoute('/assessment')({
   component: Assessment,
   validateSearch: (search: Record<string, unknown>) => {
     const params = new URLSearchParams()
-    if (search.name) params.set('name', String(search.name))
+    if (search.firstName) params.set('firstName', String(search.firstName))
+    if (search.lastName) params.set('lastName', String(search.lastName))
     for (let i = 1; i <= 11; i++) {
       const key = `c${i}` as keyof typeof search
       if (search[key]) params.set(`c${i}`, String(search[key]))
     }
     return {
-      name: (search.name as string) || '',
+      firstName: (search.firstName as string) || '',
+      lastName: (search.lastName as string) || '',
       ...Object.fromEntries(params.entries()),
     }
   },
@@ -42,17 +76,20 @@ function Assessment() {
 
   const completionCount = getCompletionCount(selections)
   const isComplete = isAssessmentComplete(selections)
-  const state = { name: search.name || '', selections }
+  const state = decodeAssessmentState(new URLSearchParams(Object.entries(search).map(([k, v]) => [k, String(v)])))
 
   const handleStageSelect = (competencyId: number, stageLevel: number) => {
     const newSelections = { ...selections, [competencyId]: stageLevel }
     
     navigate({
       to: '/assessment',
-      search: () => {
-        const newSearch: Record<string, string> = { name: state.name }
+      search: (): AssessmentSearchParams => {
+        const newSearch: AssessmentSearchParams = {}
+        if (state.firstName) newSearch.firstName = state.firstName
+        if (state.lastName) newSearch.lastName = state.lastName
         Object.entries(newSelections).forEach(([id, level]) => {
-          newSearch[`c${id}`] = level.toString()
+          const key = `c${id}` as keyof AssessmentSearchParams
+          newSearch[key] = level.toString()
         })
         return newSearch
       },
@@ -62,13 +99,16 @@ function Assessment() {
   }
 
   const handleViewResults = () => {
-    const resultsSearch: Record<string, string> = { name: state.name }
+    const resultsSearch: ResultsSearchParams = {}
+    if (state.firstName) resultsSearch.firstName = state.firstName
+    if (state.lastName) resultsSearch.lastName = state.lastName
     Object.entries(selections).forEach(([id, level]) => {
-      resultsSearch[`c${id}`] = level.toString()
+      const key = `c${id}` as keyof ResultsSearchParams
+      resultsSearch[key] = level.toString()
     })
     navigate({
       to: '/results',
-      search: resultsSearch as { name: string },
+      search: resultsSearch,
     })
   }
 
@@ -86,7 +126,7 @@ function Assessment() {
               Engineering Assessment
             </h1>
             <p className="text-white">
-              {state.name ? `Welcome, ${state.name}` : 'Evaluate your competencies'}
+              {getFullName(state) ? `Welcome, ${getFullName(state)}` : 'Evaluate your competencies'}
             </p>
           </div>
           <Popover>

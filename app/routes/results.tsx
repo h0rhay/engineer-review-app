@@ -2,16 +2,33 @@ import { createFileRoute, useSearch, useNavigate } from '@tanstack/react-router'
 import { useEffect } from 'react'
 import { ResultsDashboard } from '~/components/ResultsDashboard'
 import { Button } from '~/components/ui/button'
-import { decodeAssessmentState } from '~/lib/url-state'
+import { decodeAssessmentState, getFullName } from '~/lib/url-state'
 import { calculateResults } from '~/lib/scoring'
 import { generatePDF } from '~/lib/pdf-generator'
 import { Download, Share2, ArrowLeft } from 'lucide-react'
+
+type AssessmentSearchParams = {
+  firstName?: string
+  lastName?: string
+  c1?: string
+  c2?: string
+  c3?: string
+  c4?: string
+  c5?: string
+  c6?: string
+  c7?: string
+  c8?: string
+  c9?: string
+  c10?: string
+  c11?: string
+}
 
 export const Route = createFileRoute('/results')({
   component: Results,
   validateSearch: (search: Record<string, unknown>) => {
     return {
-      name: (search.name as string) || '',
+      firstName: (search.firstName as string) || '',
+      lastName: (search.lastName as string) || '',
     }
   },
 })
@@ -36,7 +53,7 @@ function Results() {
   const results = calculateResults(state)
 
   const handleExportPDF = () => {
-    generatePDF(results, state.name)
+    generatePDF(results, getFullName(state))
   }
 
   const handleShare = () => {
@@ -47,12 +64,14 @@ function Results() {
 
   const handleBack = () => {
     // Construct search params for assessment page to preserve state
-    // We cast to any because the search params are dynamic based on competencies
-    const assessmentSearch: any = { name: state.name }
+    const assessmentSearch: AssessmentSearchParams = {}
+    if (state.firstName) assessmentSearch.firstName = state.firstName
+    if (state.lastName) assessmentSearch.lastName = state.lastName
     
     // Add all competency selections using original stored levels (0-5), not display levels (1-6)
     Object.entries(state.selections).forEach(([id, level]) => {
-      assessmentSearch[`c${id}`] = level.toString()
+      const key = `c${id}` as keyof AssessmentSearchParams
+      assessmentSearch[key] = level.toString()
     })
 
     navigate({
@@ -85,7 +104,7 @@ function Results() {
                 Assessment Results
               </h1>
               <p className="text-white">
-                {state.name ? `${state.name}'s competency assessment` : 'Your competency assessment'}
+                {getFullName(state) ? `${getFullName(state)}'s competency assessment` : 'Your competency assessment'}
               </p>
             </div>
           </div>
@@ -102,7 +121,7 @@ function Results() {
         </div>
 
         {/* Results Dashboard */}
-        <ResultsDashboard results={results} name={state.name} />
+        <ResultsDashboard results={results} name={getFullName(state)} />
       </div>
     </div>
   )

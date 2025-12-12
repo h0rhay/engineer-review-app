@@ -1,12 +1,21 @@
 export interface AssessmentState {
-  name: string
+  firstName: string
+  lastName: string
   selections: Record<number, number>
+}
+
+export const getFullName = (state: AssessmentState): string => {
+  const parts = [state.firstName, state.lastName].filter(Boolean)
+  return parts.length > 0 ? parts.join(' ') : ''
 }
 
 export const encodeAssessmentState = (state: AssessmentState): URLSearchParams => {
   const params = new URLSearchParams()
-  if (state.name) {
-    params.set('name', state.name)
+  if (state.firstName) {
+    params.set('firstName', state.firstName)
+  }
+  if (state.lastName) {
+    params.set('lastName', state.lastName)
   }
   Object.entries(state.selections).forEach(([id, level]) => {
     params.set(`c${id}`, level.toString())
@@ -15,7 +24,8 @@ export const encodeAssessmentState = (state: AssessmentState): URLSearchParams =
 }
 
 export const decodeAssessmentState = (params: URLSearchParams): AssessmentState => {
-  const name = params.get('name') || ''
+  const firstName = params.get('firstName') || ''
+  const lastName = params.get('lastName') || ''
   const selections: Record<number, number> = {}
   
   for (let i = 1; i <= 11; i++) {
@@ -28,7 +38,7 @@ export const decodeAssessmentState = (params: URLSearchParams): AssessmentState 
     }
   }
   
-  return { name, selections }
+  return { firstName, lastName, selections }
 }
 
 export const updateSelectionInUrl = (
