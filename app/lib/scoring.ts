@@ -16,20 +16,25 @@ export interface AssessmentResults {
 }
 
 const getMaturityLevel = (average: number): string => {
-  if (average < 1) return 'Initial'
-  if (average < 2) return 'Developing'
-  if (average < 3) return 'Defined'
-  if (average < 4) return 'Established'
-  if (average < 5) return 'Managed'
+  // Average is now in range 1-6 (since we add 1 to each level)
+  if (average < 2) return 'Initial'
+  if (average < 3) return 'Developing'
+  if (average < 4) return 'Defined'
+  if (average < 5) return 'Established'
+  if (average < 6) return 'Managed'
   return 'Optimised'
 }
 
 export const calculateResults = (state: AssessmentState): AssessmentResults => {
-  const competencyScores: CompetencyScore[] = COMPETENCIES.map((competency) => ({
-    id: competency.id,
-    name: competency.name,
-    level: state.selections[competency.id] ?? 0,
-  }))
+  const competencyScores: CompetencyScore[] = COMPETENCIES.map((competency) => {
+    const storedLevel = state.selections[competency.id] ?? 0
+    // Add 1 to stored level so Initial (0) becomes 1, Developing (1) becomes 2, etc.
+    return {
+      id: competency.id,
+      name: competency.name,
+      level: storedLevel + 1,
+    }
+  })
 
   const totalLevel = competencyScores.reduce((sum, score) => sum + score.level, 0)
   const averageStage = competencyScores.length > 0 ? totalLevel / competencyScores.length : 0

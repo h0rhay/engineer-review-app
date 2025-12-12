@@ -27,7 +27,7 @@ export const ResultsDashboard = ({ results, name: _name }: ResultsDashboardProps
   const radarData = results.competencyScores.map(score => ({
     competency: COMPETENCIES.find(c => c.id === score.id)?.name || `Competency ${score.id}`,
     level: score.level,
-    fullMark: 5,
+    fullMark: 6,
   }))
 
   const barData = results.competencyScores.map(score => ({
@@ -35,10 +35,14 @@ export const ResultsDashboard = ({ results, name: _name }: ResultsDashboardProps
     level: score.level,
   }))
 
-  const stageDistribution = [0, 1, 2, 3, 4, 5].map(level => ({
-    name: COMPETENCIES[0]?.stages[level]?.name || `Level ${level}`,
-    value: results.competencyScores.filter(s => s.level === level).length,
-  })).filter(item => item.value > 0)
+  const stageDistribution = [1, 2, 3, 4, 5, 6].map(displayLevel => {
+    // Map display level back to stage index (displayLevel 1 = stage index 0, etc.)
+    const stageIndex = displayLevel - 1
+    return {
+      name: COMPETENCIES[0]?.stages[stageIndex]?.name || `Level ${displayLevel}`,
+      value: results.competencyScores.filter(s => s.level === displayLevel).length,
+    }
+  }).filter(item => item.value > 0)
 
   return (
     <div className="space-y-6">
@@ -149,7 +153,7 @@ export const ResultsDashboard = ({ results, name: _name }: ResultsDashboardProps
                 />
                 <PolarRadiusAxis
                   angle={90}
-                  domain={[0, 5]}
+                  domain={[0, 6]}
                   tick={{ fill: '#9ca3af', fontSize: 10 }}
                 />
                 <Radar
@@ -182,7 +186,7 @@ export const ResultsDashboard = ({ results, name: _name }: ResultsDashboardProps
                   tick={{ fill: '#9ca3af', fontSize: 10 }}
                 />
                 <YAxis
-                  domain={[0, 5]}
+                  domain={[0, 6]}
                   tick={{ fill: '#9ca3af', fontSize: 10 }}
                 />
                 <Tooltip

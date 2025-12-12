@@ -50,9 +50,9 @@ function Results() {
     // We cast to any because the search params are dynamic based on competencies
     const assessmentSearch: any = { name: state.name }
     
-    // Add all competency selections
-    results.competencyScores.forEach(score => {
-      assessmentSearch[`c${score.id}`] = score.level.toString()
+    // Add all competency selections using original stored levels (0-5), not display levels (1-6)
+    Object.entries(state.selections).forEach(([id, level]) => {
+      assessmentSearch[`c${id}`] = level.toString()
     })
 
     navigate({
