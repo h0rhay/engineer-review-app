@@ -51,7 +51,7 @@ export const CompetencyModal = ({
     <>
       <Dialog open={open} onOpenChange={handleClose}>
         <DialogContent
-          className="max-w-5xl w-[95vw] max-h-[95vh] overflow-y-auto m-4"
+          className="max-w-5xl w-[95vw] sm:w-[90vw] max-h-[95vh] overflow-y-auto"
           style={{ 
             viewTransitionName: `competency-${competency.id}`,
           }}
@@ -141,6 +141,7 @@ export const CompetencyModal = ({
         <StageExplanation
           stage={competency.stages[helpStage]}
           competencyName={competency.name}
+          gradientColors={competency.color}
           open={helpStage !== null}
           onOpenChange={(open) => !open && setHelpStage(null)}
         />

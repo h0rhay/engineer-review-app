@@ -4,7 +4,7 @@ import { HelpCircle } from 'lucide-react'
 import { cn } from '~/lib/utils'
 
 interface HelpButtonProps {
-  onClick: (e: React.MouseEvent) => void
+  onClick?: (e: React.MouseEvent) => void
   className?: string
   size?: 'sm' | 'md' | 'lg'
 }
@@ -28,6 +28,7 @@ export const HelpButton = ({ onClick, className, size = 'md' }: HelpButtonProps)
       whileHover={{ scale: 1.1 }}
       whileTap={{ scale: 0.95 }}
       type="button"
+      aria-label="Help"
     >
       <HelpCircle className={cn(iconSizes[size])} strokeWidth={2} />
     </motion.button>

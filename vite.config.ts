@@ -5,7 +5,11 @@ import path from 'path'
 
 export default defineConfig({
   plugins: [
-    react(),
+    react({
+      babel: {
+        plugins: [['babel-plugin-react-compiler', { target: '18' }]],
+      },
+    }),
     TanStackRouterVite({
       routesDirectory: './app/routes',
       generatedRouteTree: './app/routes/routeTree.gen.ts',

@@ -10,11 +10,12 @@ import { Sparkles, CheckCircle2, Lightbulb, RefreshCw } from 'lucide-react'
 interface StageExplanationProps {
   stage: Stage
   competencyName: string
+  gradientColors: string
   open: boolean
   onOpenChange: (open: boolean) => void
 }
 
-export const StageExplanation = ({ stage, competencyName, open, onOpenChange }: StageExplanationProps) => {
+export const StageExplanation = ({ stage, competencyName, gradientColors, open, onOpenChange }: StageExplanationProps) => {
   const [activeTab, setActiveTab] = useState<'explanation' | 'examples' | 'rephrasing'>('explanation')
   const [understood, setUnderstood] = useState(false)
 
@@ -29,13 +30,13 @@ export const StageExplanation = ({ stage, competencyName, open, onOpenChange }: 
             className="flex items-center gap-3 mb-2"
           >
             <div className="relative">
-              <div className="absolute inset-0 bg-gradient-to-br from-yellow-400 via-orange-400 to-pink-500 rounded-full blur-md opacity-50 animate-pulse" />
-              <div className="relative bg-gradient-to-br from-yellow-400 via-orange-400 to-pink-500 rounded-full p-2">
+              <div className={`absolute inset-0 bg-gradient-to-br ${gradientColors} rounded-full blur-md opacity-50 animate-pulse`} />
+              <div className={`relative bg-gradient-to-br ${gradientColors} rounded-full p-2`}>
                 <Sparkles className="h-6 w-6 text-white" />
               </div>
             </div>
             <div>
-              <DialogTitle className="text-2xl font-bold bg-gradient-to-r from-yellow-400 via-orange-400 to-pink-500 bg-clip-text text-transparent">
+              <DialogTitle className={`text-2xl font-bold bg-gradient-to-r ${gradientColors} bg-clip-text text-transparent`}>
                 {competencyName} - {stage.name}
               </DialogTitle>
               <DialogDescription className="text-white mt-1">
@@ -48,15 +49,13 @@ export const StageExplanation = ({ stage, competencyName, open, onOpenChange }: 
         <div className="space-y-4">
           {/* Desktop Tabs - hidden on mobile */}
           <div className="hidden md:block">
-            <div className="flex gap-2 border-b border-border pb-2 overflow-x-auto">
+            <div className="flex gap-2 border-b border-border pb-2">
               <motion.button
                 onClick={() => setActiveTab('explanation')}
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                className={`flex items-center gap-2 px-4 py-2 text-sm font-medium transition-all rounded-lg whitespace-nowrap ${
+                className={`flex items-center gap-2 px-4 py-2 text-sm font-medium transition-all rounded-lg whitespace-nowrap border-2 ${
                   activeTab === 'explanation'
-                    ? 'bg-gradient-to-r from-yellow-500/20 to-orange-500/20 border-2 border-primary text-foreground shadow-lg'
-                    : 'text-white hover:text-foreground hover:bg-muted/50'
+                    ? 'bg-gradient-to-r from-yellow-500/20 to-orange-500/20 border-primary text-foreground shadow-lg'
+                    : 'border-transparent text-white hover:text-foreground hover:bg-muted/50'
                 }`}
               >
                 <Lightbulb className="h-4 w-4" />
@@ -64,12 +63,10 @@ export const StageExplanation = ({ stage, competencyName, open, onOpenChange }: 
               </motion.button>
               <motion.button
                 onClick={() => setActiveTab('examples')}
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                className={`flex items-center gap-2 px-4 py-2 text-sm font-medium transition-all rounded-lg whitespace-nowrap ${
+                className={`flex items-center gap-2 px-4 py-2 text-sm font-medium transition-all rounded-lg whitespace-nowrap border-2 ${
                   activeTab === 'examples'
-                    ? 'bg-gradient-to-r from-yellow-500/20 to-orange-500/20 border-2 border-primary text-foreground shadow-lg'
-                    : 'text-white hover:text-foreground hover:bg-muted/50'
+                    ? 'bg-gradient-to-r from-yellow-500/20 to-orange-500/20 border-primary text-foreground shadow-lg'
+                    : 'border-transparent text-white hover:text-foreground hover:bg-muted/50'
                 }`}
               >
                 <Sparkles className="h-4 w-4" />
@@ -77,12 +74,10 @@ export const StageExplanation = ({ stage, competencyName, open, onOpenChange }: 
               </motion.button>
               <motion.button
                 onClick={() => setActiveTab('rephrasing')}
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                className={`flex items-center gap-2 px-4 py-2 text-sm font-medium transition-all rounded-lg whitespace-nowrap ${
+                className={`flex items-center gap-2 px-4 py-2 text-sm font-medium transition-all rounded-lg whitespace-nowrap border-2 ${
                   activeTab === 'rephrasing'
-                    ? 'bg-gradient-to-r from-yellow-500/20 to-orange-500/20 border-2 border-primary text-foreground shadow-lg'
-                    : 'text-white hover:text-foreground hover:bg-muted/50'
+                    ? 'bg-gradient-to-r from-yellow-500/20 to-orange-500/20 border-primary text-foreground shadow-lg'
+                    : 'border-transparent text-white hover:text-foreground hover:bg-muted/50'
                 }`}
               >
                 <RefreshCw className="h-4 w-4" />

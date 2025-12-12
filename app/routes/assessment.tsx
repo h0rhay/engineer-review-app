@@ -132,7 +132,7 @@ function Assessment() {
           <Popover>
             <PopoverTrigger asChild>
               <div className="flex items-center gap-2 cursor-pointer">
-                <HelpButton size="md" onClick={(e) => e.preventDefault()} />
+                <HelpButton size="md" />
                 <span className="text-sm text-white hidden md:inline">
                   Click the <span className="text-primary font-semibold">✨ help buttons</span> on any stage!
                 </span>
