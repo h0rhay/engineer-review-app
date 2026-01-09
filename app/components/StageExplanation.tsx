@@ -21,25 +21,25 @@ export const StageExplanation = ({ stage, competencyName, gradientColors, open, 
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-2xl bg-card border-border">
+      <DialogContent className="max-w-2xl w-full sm:w-[90vw] bg-card border-border">
         <DialogHeader>
           <motion.div
             initial={{ scale: 0.8, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             transition={{ duration: 0.3 }}
-            className="flex items-center gap-3 mb-2"
+            className="flex flex-col sm:flex-row items-start sm:items-center gap-3 mb-2"
           >
-            <div className="relative">
+            <div className="relative flex-shrink-0">
               <div className={`absolute inset-0 bg-gradient-to-br ${gradientColors} rounded-full blur-md opacity-50 animate-pulse`} />
               <div className={`relative bg-gradient-to-br ${gradientColors} rounded-full p-2`}>
-                <Sparkles className="h-6 w-6 text-white" />
+                <Sparkles className="h-5 w-5 sm:h-6 sm:w-6 text-white" />
               </div>
             </div>
-            <div>
-              <DialogTitle className={`text-2xl font-bold bg-gradient-to-r ${gradientColors} bg-clip-text text-transparent`}>
+            <div className="flex-1 min-w-0">
+              <DialogTitle className={`text-xl sm:text-2xl font-bold bg-gradient-to-r ${gradientColors} bg-clip-text text-transparent break-words`}>
                 {competencyName} - {stage.name}
               </DialogTitle>
-              <DialogDescription className="text-white mt-1">
+              <DialogDescription className="text-white mt-1 break-words">
                 I'm here to help! What would you like to know? 💡
               </DialogDescription>
             </div>
@@ -49,38 +49,38 @@ export const StageExplanation = ({ stage, competencyName, gradientColors, open, 
         <div className="space-y-4">
           {/* Desktop Tabs - hidden on mobile */}
           <div className="hidden md:block">
-            <div className="flex gap-2 border-b border-border pb-2">
+            <div className="flex flex-wrap gap-2 border-b border-border pb-2">
               <motion.button
                 onClick={() => setActiveTab('explanation')}
-                className={`flex items-center gap-2 px-4 py-2 text-sm font-medium transition-all rounded-lg whitespace-nowrap border-2 ${
+                className={`flex items-center gap-2 px-3 sm:px-4 py-2 text-xs sm:text-sm font-medium transition-all rounded-lg whitespace-nowrap border-2 flex-shrink-0 ${
                   activeTab === 'explanation'
                     ? 'bg-gradient-to-r from-yellow-500/20 to-orange-500/20 border-primary text-foreground shadow-lg'
                     : 'border-transparent text-white hover:text-foreground hover:bg-muted/50'
                 }`}
               >
-                <Lightbulb className="h-4 w-4" />
+                <Lightbulb className="h-3 w-3 sm:h-4 sm:w-4" />
                 Help me understand this
               </motion.button>
               <motion.button
                 onClick={() => setActiveTab('examples')}
-                className={`flex items-center gap-2 px-4 py-2 text-sm font-medium transition-all rounded-lg whitespace-nowrap border-2 ${
+                className={`flex items-center gap-2 px-3 sm:px-4 py-2 text-xs sm:text-sm font-medium transition-all rounded-lg whitespace-nowrap border-2 flex-shrink-0 ${
                   activeTab === 'examples'
                     ? 'bg-gradient-to-r from-yellow-500/20 to-orange-500/20 border-primary text-foreground shadow-lg'
                     : 'border-transparent text-white hover:text-foreground hover:bg-muted/50'
                 }`}
               >
-                <Sparkles className="h-4 w-4" />
+                <Sparkles className="h-3 w-3 sm:h-4 sm:w-4" />
                 Show me an example
               </motion.button>
               <motion.button
                 onClick={() => setActiveTab('rephrasing')}
-                className={`flex items-center gap-2 px-4 py-2 text-sm font-medium transition-all rounded-lg whitespace-nowrap border-2 ${
+                className={`flex items-center gap-2 px-3 sm:px-4 py-2 text-xs sm:text-sm font-medium transition-all rounded-lg whitespace-nowrap border-2 flex-shrink-0 ${
                   activeTab === 'rephrasing'
                     ? 'bg-gradient-to-r from-yellow-500/20 to-orange-500/20 border-primary text-foreground shadow-lg'
                     : 'border-transparent text-white hover:text-foreground hover:bg-muted/50'
                 }`}
               >
-                <RefreshCw className="h-4 w-4" />
+                <RefreshCw className="h-3 w-3 sm:h-4 sm:w-4" />
                 Rephrase this for me
               </motion.button>
             </div>
@@ -223,14 +223,14 @@ export const StageExplanation = ({ stage, competencyName, gradientColors, open, 
 
           {/* Understanding check */}
           <div className="border-t border-border pt-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium mb-1">Do you understand this statement?</p>
-                <p className="text-xs text-white">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-2">
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-medium mb-1 break-words">Do you understand this statement?</p>
+                <p className="text-xs text-white break-words">
                   {understood ? 'Great! You can proceed with your assessment.' : 'Select an option below'}
                 </p>
               </div>
-              <div className="flex gap-2">
+              <div className="flex flex-wrap gap-2 w-full sm:w-auto">
                 {!understood ? (
                   <>
                     <Button
@@ -240,6 +240,7 @@ export const StageExplanation = ({ stage, competencyName, gradientColors, open, 
                         setUnderstood(true)
                         setTimeout(() => onOpenChange(false), 1000)
                       }}
+                      className="flex-1 sm:flex-initial"
                     >
                       <CheckCircle2 className="h-4 w-4 mr-2" />
                       Yes, I understand
@@ -252,6 +253,7 @@ export const StageExplanation = ({ stage, competencyName, gradientColors, open, 
                         else if (activeTab === 'examples') setActiveTab('rephrasing')
                         else setActiveTab('explanation')
                       }}
+                      className="flex-1 sm:flex-initial"
                     >
                       I'm still not sure
                     </Button>

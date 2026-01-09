@@ -51,20 +51,20 @@ export const CompetencyModal = ({
     <>
       <Dialog open={open} onOpenChange={handleClose}>
         <DialogContent
-          className="max-w-5xl w-[95vw] sm:w-[90vw] max-h-[95vh] overflow-y-auto"
+          className="max-w-5xl w-full sm:w-[90vw] max-h-[95vh] overflow-y-auto"
           style={{ 
             viewTransitionName: `competency-${competency.id}`,
           }}
         >
           <DialogHeader>
-            <div className="flex items-center gap-4">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4">
               <div
-                className={`w-16 h-16 rounded-full ${competency.gradient} flex items-center justify-center text-white font-bold text-xl`}
+                className={`w-12 h-12 sm:w-16 sm:h-16 rounded-full ${competency.gradient} flex items-center justify-center text-white font-bold text-lg sm:text-xl flex-shrink-0`}
               >
                 {competency.id}
               </div>
-              <div className="flex-1">
-                <DialogTitle className="text-2xl text-white">{competency.name}</DialogTitle>
+              <div className="flex-1 min-w-0">
+                <DialogTitle className="text-xl sm:text-2xl text-white break-words">{competency.name}</DialogTitle>
                 {isComplete && (
                   <Badge variant="default" className="mt-2 gap-1">
                     Complete
@@ -83,7 +83,7 @@ export const CompetencyModal = ({
               {competency.stages.map((stage) => (
                 <div
                   key={stage.level}
-                  className={`flex items-start gap-3 p-4 rounded-lg border transition-colors ${
+                  className={`flex items-start gap-2 sm:gap-3 p-3 sm:p-4 rounded-lg border transition-colors ${
                     selectedStage === stage.level
                       ? 'border-primary bg-primary/10'
                       : 'border-border hover:border-primary/50'
@@ -92,16 +92,17 @@ export const CompetencyModal = ({
                   <RadioGroupItem
                     value={stage.level.toString()}
                     id={`c${competency.id}-s${stage.level}`}
+                    className="mt-0.5 flex-shrink-0"
                   />
                   <label
                     htmlFor={`c${competency.id}-s${stage.level}`}
-                    className="flex-1 cursor-pointer"
+                    className="flex-1 cursor-pointer min-w-0"
                   >
-                    <div className="flex items-start justify-between gap-3">
-                      <div className="flex-1">
-                        <div className="flex items-center gap-3 mb-2 group/help">
-                          <span className="font-semibold text-white text-base">{stage.name}</span>
-                          <div className="relative">
+                    <div className="flex items-start justify-between gap-2 sm:gap-3">
+                      <div className="flex-1 min-w-0">
+                        <div className="flex flex-wrap items-center gap-2 sm:gap-3 mb-2 group/help">
+                          <span className="font-semibold text-white text-sm sm:text-base break-words">{stage.name}</span>
+                          <div className="relative flex-shrink-0">
                             <HelpButton
                               size="sm"
                               onClick={(e) => {
@@ -110,11 +111,11 @@ export const CompetencyModal = ({
                               }}
                             />
                           </div>
-                          <span className="text-xs text-white opacity-0 group-hover/help:opacity-100 transition-opacity whitespace-nowrap">
+                          <span className="hidden sm:inline text-xs text-white opacity-0 group-hover/help:opacity-100 transition-opacity whitespace-nowrap">
                             Help me understand this
                           </span>
                         </div>
-                        <p className="text-sm text-white leading-relaxed">{stage.description}</p>
+                        <p className="text-sm text-white leading-relaxed break-words">{stage.description}</p>
                       </div>
                     </div>
                   </label>
