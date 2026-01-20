@@ -23,11 +23,22 @@ const COLORS = [
   '#22c55e', // emerald
 ]
 
+const getScoreLabel = (score: number): string => {
+  const labels: Record<number, string> = {
+    1: 'Underperforming',
+    2: 'Below Level',
+    3: 'Meeting Level',
+    4: 'Above Level',
+    5: 'Promotion Ready',
+  }
+  return labels[score] || `Score ${score}`
+}
+
 export const ResultsDashboard = ({ results, name: _name }: ResultsDashboardProps) => {
   const radarData = results.competencyScores.map(score => ({
     competency: COMPETENCIES.find(c => c.id === score.id)?.name || `Competency ${score.id}`,
     level: score.level,
-    fullMark: 6,
+    fullMark: 5,
   }))
 
   const barData = results.competencyScores.map(score => ({
@@ -35,12 +46,10 @@ export const ResultsDashboard = ({ results, name: _name }: ResultsDashboardProps
     level: score.level,
   }))
 
-  const stageDistribution = [1, 2, 3, 4, 5, 6].map(displayLevel => {
-    // Map display level back to stage index (displayLevel 1 = stage index 0, etc.)
-    const stageIndex = displayLevel - 1
+  const stageDistribution = [1, 2, 3, 4, 5].map(score => {
     return {
-      name: COMPETENCIES[0]?.stages[stageIndex]?.name || `Level ${displayLevel}`,
-      value: results.competencyScores.filter(s => s.level === displayLevel).length,
+      name: getScoreLabel(score),
+      value: results.competencyScores.filter(s => s.level === score).length,
     }
   }).filter(item => item.value > 0)
 
@@ -57,9 +66,6 @@ export const ResultsDashboard = ({ results, name: _name }: ResultsDashboardProps
             <div className="text-3xl font-bold text-primary">
               {results.averageStage.toFixed(1)}
             </div>
-            <Badge variant="secondary" className="mt-2">
-              {results.overallMaturity}
-            </Badge>
           </CardContent>
         </Card>
 
@@ -153,7 +159,7 @@ export const ResultsDashboard = ({ results, name: _name }: ResultsDashboardProps
                 />
                 <PolarRadiusAxis
                   angle={90}
-                  domain={[0, 6]}
+                  domain={[0, 5]}
                   tick={{ fill: '#9ca3af', fontSize: 10 }}
                 />
                 <Radar
@@ -186,7 +192,7 @@ export const ResultsDashboard = ({ results, name: _name }: ResultsDashboardProps
                   tick={{ fill: '#9ca3af', fontSize: 10 }}
                 />
                 <YAxis
-                  domain={[0, 6]}
+                  domain={[0, 5]}
                   tick={{ fill: '#9ca3af', fontSize: 10 }}
                 />
                 <Tooltip

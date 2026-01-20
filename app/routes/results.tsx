@@ -10,6 +10,7 @@ import { Download, Share2, ArrowLeft } from 'lucide-react'
 type AssessmentSearchParams = {
   firstName?: string
   lastName?: string
+  role?: string
   c1?: string
   c2?: string
   c3?: string
@@ -29,6 +30,7 @@ export const Route = createFileRoute('/results')({
     return {
       firstName: (search.firstName as string) || '',
       lastName: (search.lastName as string) || '',
+      role: (search.role as string) || '',
     }
   },
 })
@@ -67,6 +69,7 @@ function Results() {
     const assessmentSearch: AssessmentSearchParams = {}
     if (state.firstName) assessmentSearch.firstName = state.firstName
     if (state.lastName) assessmentSearch.lastName = state.lastName
+    if (state.role) assessmentSearch.role = state.role
     
     // Add all competency selections using original stored levels (0-5), not display levels (1-6)
     Object.entries(state.selections).forEach(([id, level]) => {

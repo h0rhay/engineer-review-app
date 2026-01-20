@@ -11,6 +11,7 @@ import { Popover, PopoverContent, PopoverTrigger } from '~/components/ui/popover
 type AssessmentSearchParams = {
   firstName?: string
   lastName?: string
+  role?: string
   c1?: string
   c2?: string
   c3?: string
@@ -27,6 +28,7 @@ type AssessmentSearchParams = {
 type ResultsSearchParams = {
   firstName?: string
   lastName?: string
+  role?: string
   c1?: string
   c2?: string
   c3?: string
@@ -46,6 +48,7 @@ export const Route = createFileRoute('/assessment')({
     const params = new URLSearchParams()
     if (search.firstName) params.set('firstName', String(search.firstName))
     if (search.lastName) params.set('lastName', String(search.lastName))
+    if (search.role) params.set('role', String(search.role))
     for (let i = 1; i <= 11; i++) {
       const key = `c${i}` as keyof typeof search
       if (search[key]) params.set(`c${i}`, String(search[key]))
@@ -53,6 +56,7 @@ export const Route = createFileRoute('/assessment')({
     return {
       firstName: (search.firstName as string) || '',
       lastName: (search.lastName as string) || '',
+      role: (search.role as string) || '',
       ...Object.fromEntries(params.entries()),
     }
   },
@@ -87,6 +91,7 @@ function Assessment() {
         const newSearch: AssessmentSearchParams = {}
         if (state.firstName) newSearch.firstName = state.firstName
         if (state.lastName) newSearch.lastName = state.lastName
+        if (state.role) newSearch.role = state.role
         Object.entries(newSelections).forEach(([id, level]) => {
           const key = `c${id}` as keyof AssessmentSearchParams
           newSearch[key] = level.toString()
@@ -102,6 +107,7 @@ function Assessment() {
     const resultsSearch: ResultsSearchParams = {}
     if (state.firstName) resultsSearch.firstName = state.firstName
     if (state.lastName) resultsSearch.lastName = state.lastName
+    if (state.role) resultsSearch.role = state.role
     Object.entries(selections).forEach(([id, level]) => {
       const key = `c${id}` as keyof ResultsSearchParams
       resultsSearch[key] = level.toString()
