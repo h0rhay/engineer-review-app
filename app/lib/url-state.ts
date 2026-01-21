@@ -1,6 +1,9 @@
+export type Role = 'IP' | 'E1' | 'E2' | 'Senior' | 'Lead' | 'Principal/Architect'
+
 export interface AssessmentState {
   firstName: string
   lastName: string
+  role: Role | ''
   selections: Record<number, number>
 }
 
@@ -17,15 +20,22 @@ export const encodeAssessmentState = (state: AssessmentState): URLSearchParams =
   if (state.lastName) {
     params.set('lastName', state.lastName)
   }
+  if (state.role) {
+    params.set('role', state.role)
+  }
   Object.entries(state.selections).forEach(([id, level]) => {
     params.set(`c${id}`, level.toString())
   })
   return params
 }
 
+const VALID_ROLES: Role[] = ['IP', 'E1', 'E2', 'Senior', 'Lead', 'Principal/Architect']
+
 export const decodeAssessmentState = (params: URLSearchParams): AssessmentState => {
   const firstName = params.get('firstName') || ''
   const lastName = params.get('lastName') || ''
+  const roleParam = params.get('role') || ''
+  const role: Role | '' = VALID_ROLES.includes(roleParam as Role) ? (roleParam as Role) : ''
   const selections: Record<number, number> = {}
   
   for (let i = 1; i <= 11; i++) {
@@ -38,7 +48,7 @@ export const decodeAssessmentState = (params: URLSearchParams): AssessmentState 
     }
   }
   
-  return { firstName, lastName, selections }
+  return { firstName, lastName, role, selections }
 }
 
 export const updateSelectionInUrl = (

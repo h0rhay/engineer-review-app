@@ -1,4 +1,4 @@
-import type { AssessmentState } from './url-state'
+import type { AssessmentState, Role } from './url-state'
 import { COMPETENCIES } from './competencies'
 
 export interface CompetencyScore {
@@ -15,24 +15,49 @@ export interface AssessmentResults {
   weakestAreas: CompetencyScore[]
 }
 
+const roleToStage = (role: Role | ''): number => {
+  const mapping: Record<Role, number> = {
+    'IP': 0,              // Initial
+    'E1': 1,              // Developing
+    'E2': 2,              // Defined
+    'Senior': 3,          // Established
+    'Lead': 4,            // Managed
+    'Principal/Architect': 5, // Optimised
+  }
+  return role ? mapping[role] : 2 // Default to E2 if no role selected
+}
+
+const calculateRelativeScore = (selectedStage: number, roleStage: number): number => {
+  const diff = selectedStage - roleStage
+  if (diff <= -2) return 1      // Seriously underperforming
+  if (diff === -1) return 2      // Previous level
+  if (diff === 0) return 3       // Meeting level
+  if (diff === 1) return 4       // Next level up
+  return 5                       // Really want promotion (diff >= 2)
+}
+
 const getMaturityLevel = (average: number): string => {
-  // Average is now in range 1-6 (since we add 1 to each level)
-  if (average < 2) return 'Initial'
-  if (average < 3) return 'Developing'
-  if (average < 4) return 'Defined'
-  if (average < 5) return 'Established'
-  if (average < 6) return 'Managed'
-  return 'Optimised'
+  // Average is now in range 1-5 (relative scores)
+  if (average < 2) return 'Underperforming'
+  if (average < 3) return 'Below Level'
+  if (average < 4) return 'Meeting Level'
+  if (average < 5) return 'Above Level'
+  return 'Promotion Ready'
 }
 
 export const calculateResults = (state: AssessmentState): AssessmentResults => {
+  const roleStage = roleToStage(state.role)
+  
   const competencyScores: CompetencyScore[] = COMPETENCIES.map((competency) => {
-    const storedLevel = state.selections[competency.id] ?? 0
-    // Add 1 to stored level so Initial (0) becomes 1, Developing (1) becomes 2, etc.
+    const selectedStage = state.selections[competency.id]
+    // Only calculate score if stage has been selected, otherwise default to role stage (score 3)
+    const stageToUse = selectedStage !== undefined ? selectedStage : roleStage
+    // Calculate relative score based on selected stage vs role stage
+    const relativeScore = calculateRelativeScore(stageToUse, roleStage)
     return {
       id: competency.id,
       name: competency.name,
-      level: storedLevel + 1,
+      level: relativeScore,
     }
   })
 
